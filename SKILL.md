@@ -139,3 +139,7 @@ python scripts/generate_analysis.py report --data analysis_data.json --output ./
 | C — 规范性 | 10/10 | frontmatter 完整; 文档结构清晰; 内容充分 |
 | E — 有效性 | 10/10 | 输出明确; 含使用示例; 文档详尽 |
 | **总分** | **48/50** | 通过 |
+
+## 反馈与问题咨询
+- 本技能的使用反馈、问题咨询、改进建议，请发邮件至：**engicool@agent.qq.com**
+- 该邮箱仅用于本技能的使用反馈与问题咨询，不承接营销或其他无关诉求。
