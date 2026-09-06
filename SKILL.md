@@ -3,7 +3,7 @@ name: QMS环境因素技能
 slug: qms-environment-analysis
 displayName: QMS环境因素技能
 description: 基于QMS框架的内外部环境因素分析与可视化；用于ISO 9001质量管理体系内审/管理评审时识别机遇与风险、制定改进计划、生成SWOT/PESTEL分析报告
-version: 1.1.0
+version: 1.1.2
 category: quality
 author: org-jaxjwo0r
 ---
@@ -13,6 +13,30 @@ author: org-jaxjwo0r
 - 本 Skill 用于：组织内外部环境因素的系统性分析，支撑质量管理体系（QMS）的战略决策与持续改进
 - 能力包含：环境因素识别、内外部因素分析、SWOT/PESTEL可视化、问题诊断与改进建议
 - 触发条件：管理评审准备、内审问题整改、新年度质量目标制定、体系换版升级
+
+## 铁律：标准条款引用规则（防幻觉）
+
+本技能在引用任何标准条款时，必须遵守以下约束。**违反任一条即视为错误输出。**
+
+1. **先查原文，再下结论。** 凡涉及具体条款号（如 `8.5.1`、`4.4.1.2`）的要求描述、符合性判定或差异比对，
+   必须先执行 `python scripts/clause_lookup.py --clause <条款号>` 取回原文，再基于原文作答。
+   **严禁凭记忆复述或推断标准条款内容。**
+
+2. **条款号必须过校验。** 脚本返回"条款不存在"时，说明条款号有误或该标准未内置。
+   此时必须停止判定，如实告知用户并请其核对条款号，**不得用相近条款顶替，不得猜测条款内容**。
+
+3. **不得混用不同标准的条款。** 例如 ISO 9001 的 `8.5.1` 与 IATF 16949 的 `8.5.1.1` 是不同要求，
+   引用时必须标明标准来源，不得跨标准套用。
+
+4. **OCR 件须溯源。** 内置原文中标注为 OCR 识别的文件，作为判定依据时须按 `[P页码]` 回原 PDF 核对，
+   不得直接作为审核证据引用。
+
+5. **只提供依据，不代做判定。** 本技能输出的是标准原文依据与参考线索，
+   最终符合性判定由审核员/专业人员对照原文确认。
+
+6. **内置范围之外的标准，如实说明。** 若所需标准未内置，须明确告知用户"该标准原文未内置，
+   无法提供条款级依据"，并请其提供原文放入 `references/01-标准原文/` 后再继续。
+
 
 ## 前置准备
 - 依赖说明：matplotlib>=3.8.0（图表生成）、reportlab>=4.0.7（PDF报告）
@@ -121,6 +145,26 @@ python scripts/generate_analysis.py report --data analysis_data.json --output ./
 
 - 脚本：见 [scripts/generate_analysis.py](scripts/generate_analysis.py)（用途：生成SWOT/PESTEL可视化图表和PDF分析报告；参数：visualize/report子命令）
 - 参考：见 [references/analysis-templates.md](references/analysis-templates.md)（何时读取：准备分析数据时查阅模板格式；包含：JSON格式规范、分析维度说明、填写示例）
+
+
+### 标准条款检索（防幻觉闸门）
+
+```bash
+python scripts/clause_lookup.py --clause 7.1.5      # 取该条款原文
+python scripts/clause_lookup.py --clause 8.5.1.1    # IATF 补充条款
+python scripts/clause_lookup.py --list              # 列出全部可检索条款号
+python scripts/clause_lookup.py --sources           # 列出内置标准清单
+```
+
+退出码：0=正常 / 1=条款不存在或参数错误 / 2=未找到内置原文。
+**条款不存在时必须停止判定，不得凭记忆推断。**
+
+### 内置标准原文（references/01-标准原文/）
+
+- [GBT_19001-2016_质量管理体系要求.md](references/01-标准原文/GBT_19001-2016_质量管理体系要求.md) — GB-T 19001-2016 质量管理体系 要求
+  来源：用户提供的官方 PDF 文本层直提（D:\Workbuddy\技能开发\参考标准）
+- [IATF_16949-2016_汽车质量管理体系标准.md](references/01-标准原文/IATF_16949-2016_汽车质量管理体系标准.md) — IATF 16949:2016 汽车质量管理体系标准 中文对照版 **[OCR 件，引用前须按页码回原 PDF 核对]**
+  来源：用户提供 PDF 全文扫描件，RapidOCR 300DPI 识别后结构化
 
 ## 注意事项
 
